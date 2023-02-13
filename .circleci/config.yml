@@ -156,26 +156,30 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      Here's where you will add some code to rollback on failure
-      - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   
+      # Here's where you will add some code to rollback on failure
+      # - destroy-environment:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   
 
   configure-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.10-alphine3.16
     steps:
       - checkout
-      - run: yum install tar gzip -y
+      - add_ssh_keys:
+          fingerprints:
+            - 0c:f1:5d:38:da:da:c3:6c:f7:76:0e:ce:ef:1a:d0:b6
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependencies
           command: |
-            # Your code here
-            exit 1
+            apk add --update --no-cache ansible tar gzip aws-cli openssh
       - run:
           name: Configure server
           command: |
-            # Your code here
-            exit 1
+            pwd
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure      
 
 #   run-migrations:
