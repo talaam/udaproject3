@@ -167,7 +167,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - 0c:f1:5d:38:da:da:c3:6c:f7:76:0e:ce:ef:1a:d0:b6
+            - "0c:f1:5d:38:da:da:c3:6c:f7:76:0e:ce:ef:1a:d0:b6"
       - attach_workspace:
           at: ~/
       - run:
@@ -180,12 +180,18 @@ jobs:
             pwd
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
-      # Here's where you will add some code to rollback on failure      
+          no_output_timeout: 30m
+      # Here's where you will add some code to rollback on failure
+      # - destroy-environment:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}     
 
 #   run-migrations:
-#     docker:
-#       # Docker image here that supports NodeJS
-#     steps:
+    # docker:
+    #   - image: circleci/node:13.08.0
+    # steps:
+    #   - checkout
+    #   - restore_cache:
+    #       keys: [backend-build]
 #       # Checkout code from git
 #       - run:
 #           name: Run migrations
