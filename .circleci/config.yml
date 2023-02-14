@@ -148,10 +148,11 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             aws ec2 describe-instances \
-            --query "Reservations[*].Instances[*].[PublicIpAddresses]" \
+            --query "Reservations[*].Instances[*].[PublicIpAddress]" \
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --output text >> ~/project/.circleci/ansible/inventory.txt
             cat ~/project/.circleci/ansible/inventory.txt
+
       - persist_to_workspace:
           root: ~/
           paths:
@@ -162,7 +163,7 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: python:3.9.0-alpine
+      - image: python:3.10-alpine
     steps:
       - checkout
       - add_ssh_keys:
@@ -198,8 +199,7 @@ jobs:
           name: Run migrations
           command: |
               cd backend
-              npm install
-              # Run and save the migration output
+              sudo npm install -g npm
               npm run migrations > migrations_dump.txt
               cat migrations_dump.txt
       - run:
