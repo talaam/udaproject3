@@ -172,10 +172,12 @@ jobs:
           at: ~/
       - run:
           name: Install dependencies
+          working_directory: ./.circleci/ansible
           command: |
             apk add --update --no-cache ansible tar gzip aws-cli openssh
       - run:
           name: Configure server
+          working_directory: ./.circleci/ansible
           command: |
             pwd
             cd .circleci/ansible
