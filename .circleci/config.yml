@@ -179,8 +179,6 @@ jobs:
           name: Configure server
           working_directory: ./.circleci/ansible
           command: |
-            pwd
-            cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
           no_output_timeout: 30m
           
