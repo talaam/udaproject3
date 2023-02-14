@@ -161,7 +161,8 @@ jobs:
       #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}   
 
   configure-infrastructure:
-    executor: python
+    docker:
+      - image: python:3.9.0-alpine
     steps:
       - checkout
       - add_ssh_keys:
@@ -182,7 +183,7 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
           no_output_timeout: 30m
-
+          
       # Here's where you will add some code to rollback on failure
       # - destroy-environment:
       #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}     
