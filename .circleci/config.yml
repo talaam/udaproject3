@@ -282,7 +282,6 @@ jobs:
           command: |
             pwd
             cd backend
-
             touch .env
             echo ENVIRONMENT-production > ".env"
             echo TYPEORM_CONNECTION=postgres >> ".env"
