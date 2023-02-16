@@ -39,3 +39,23 @@
       global: yes
       production: yes
       state: present
+  - name: Create Backend App Directory
+    file:
+      path: ~/backend_app_dir
+      state: directory
+
+  - name: "copy artifact into instance"
+    become: true 
+    copy: 
+      src: ~/project/artifact.tar.gz
+      dest: /home/ubuntu/backend_app_dir/artifact.tar.gz
+
+  - name: "Start App"
+    become: true
+    shell: |
+      cd /home/ubuntu/backend_app_dir
+      tar xzvf artifact.tar.gz
+      npm install
+      npm run build
+      pm2 stop all
+      pm2 start npm -- start
