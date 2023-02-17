@@ -1,2 +1,10 @@
+# Github URL
 URL01 - https://github.com/talaam/udaproject3
+# s3 url
 URL02 - http://udapeople-e73023b.s3-website-us-east-1.amazonaws.com
+# CloudFront Distribution URL
+URL03 - https://d3k1lmq7175zp1.cloudfront.net
+# Backend URL
+URL04 - http://54.88.236.33:3030
+# Prometheus URL
+URL05 - http://ec2-44-201-111-159.compute-1.amazonaws.com:9090/targets
