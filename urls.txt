@@ -1,4 +1,4 @@
 # Github URL
 URL01 - https://github.com/talaam/udaproject3
 # s3 url
-URL02 - http://udapeople-bb07d0e.s3-website-us-east-1.amazonaws.com
+URL02 - http://udapeople-552d01d.s3-website-us-east-1.amazonaws.com

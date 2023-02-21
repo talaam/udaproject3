@@ -1,36 +1,82 @@
 version: 2.1
 
 commands:
-  destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+  # destroy-environment:
+  #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+  #   parameters:
+  #     # Add parameter here   
+  #   steps:
+  #     - run:
+  #         name: Destroy environments
+  #         when: on_fail
+  #         command: |
+  #           # Your code here
+  #           echo "Destroying environment: << parameters.workflow_id >> "
+
+  # revert-migrations:
+  #   description: Revert the last migration if successfully run in the current workflow.
+  #   parameters:
+  #     # Add parameter here     
+  #   steps:
+  #     - run:
+  #         name: Revert migrations
+  #         # Add when this will run
+  #         command: |
+  #           # Example: kvdb.io
+  #           SUCCESS=$(curl --insecure  https://kvdb.io/X98PAA5gGaJrknVf8oSff9/migration_<< parameters.workflow_id >>)
+  #           # Logic for reverting the database state
+  #           if (( $SUCCESS == 1 ));
+  #           then
+  #               cd ~/project/backend
+  #               npm install
+  #               npm run migration:revert
+  #           fi
+
+  destroy_environment:
+    description: Destroy Cloud Formation Stacks and infrastructure
     parameters:
-      # Add parameter here   
+      when:
+        type: string
+      id:
+        type: string
     steps:
       - run:
-          name: Destroy environments
-          when: on_fail
+          name: Destroy udapeople backend cfn stack
           command: |
-            # Your code here
-            echo "Destroying environment: << parameters.workflow_id >> "
+            aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.id >>
+          environment:
+            TERM: xterm-256color
+          when: << parameters.when >>
+      - run:
+          name: Destroy udapeople frontend cfn stack and S3 bucket
+          command: |
+            aws s3 rm s3://udapeople-<< parameters.id >> --recursive
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.id >>
+          environment:
+              TERM: xterm-256color
+          when: << parameters.when >>
 
-  revert-migrations:
+  revert_migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      # Add parameter here     
+      when:
+        type: string
+      id:
+        type: string
     steps:
       - run:
           name: Revert migrations
-          # Add when this will run
+          working_directory: ./backend
           command: |
-            # Example: kvdb.io
             SUCCESS=$(curl --insecure  https://kvdb.io/X98PAA5gGaJrknVf8oSff9/migration_<< parameters.workflow_id >>)
-            # Logic for reverting the database state
-            if (( $SUCCESS == 1 ));
+            echo $SUCCESS
+            if [[ "$SUCCESS" == "success" ]]
             then
-                cd ~/project/backend
-                npm install
-                npm run migration:revert
-            fi 
+              pwd
+              ls -la
+              npm run migrations:revert
+            fi
+          when: << parameters.when >>
             
 jobs:
   build-frontend:
@@ -365,10 +411,10 @@ jobs:
               return 1
             fi
       # Here's where you will add some code to rollback on failure
-      # - destroy-environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-      # - revert-migrations:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
 
 
   cloudfront-update:
