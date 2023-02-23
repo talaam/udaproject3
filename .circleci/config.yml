@@ -496,6 +496,7 @@ jobs:
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive || true
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}" || true
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}" || true
+              echo "-----------Deleting Confirmed----------"
             else
               echo "Stack is the latest"
             fi
