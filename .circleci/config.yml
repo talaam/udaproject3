@@ -74,6 +74,8 @@ commands:
             then
               pwd
               ls -la
+              cd ~/project/backend
+              npm install
               npm run migrations:revert
             fi
           when: << parameters.when >>
